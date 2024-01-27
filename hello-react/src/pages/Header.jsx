@@ -8,10 +8,15 @@ import{
 
 import{
     Checklist as CheckListIcon,
-    ClearAll as ClearAllIcon
+    ClearAll as ClearAllIcon,
+    LightMode as LightModeIcon,
+    DarkMode as DarkModeIcon
 }from '@mui/icons-material';
+import { useContext } from 'react';
+import { ThemeContext } from '../Theme';
 
 export default function Header({count, clear}){
+    const{mode, setMode} = useContext(ThemeContext);
     return (
         <AppBar position='static'>
             <Toolbar>
@@ -21,6 +26,20 @@ export default function Header({count, clear}){
                 <Typography variant='h6' sx={({ml:2,flexGrow:1})}>
                     CheckList
                 </Typography>
+                {
+                    mode =="dark"?
+                    <IconButton onClick={()=>{
+                        setMode("light");
+                    }}>
+                        <LightModeIcon color = "inherit"></LightModeIcon>
+                    </IconButton>
+                    :
+                    <IconButton onClick={()=>{
+                        setMode("dark");
+                    }}>
+                        <DarkModeIcon color = "inherit"></DarkModeIcon>
+                    </IconButton>
+                }
                 <IconButton onClick={clear}>
                     <ClearAllIcon color = "inherit"/>
                 </IconButton>
