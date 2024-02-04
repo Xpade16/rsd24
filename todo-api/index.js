@@ -29,7 +29,9 @@ const tasks = db.collection("tasks");
 
 app.get('/tasks', async (req, res) => {
     const data = await tasks.find().toArray();
-    return res.json(data);
+    setTimeout(()=>{
+        return res.json(data);
+    }, 3000);
 });
 
 app.get('/tasks/:id', async (req, res) => {
@@ -41,6 +43,7 @@ app.get('/tasks/:id', async (req, res) => {
 });
 app.post('/tasks', async (req, res) => {
     const { subject } = req.body;
+    console.log(req.body);
     if (!subject) {
         return res.status(400).json({ msg: 'subject Required' });
     }
@@ -100,6 +103,11 @@ app.put('/tasks/toggle/:id', async(req,res)=>{
     )
     const data = await tasks.findOne({_id});
     return res.json(data);
+})
+
+app.delete('/tasks', async(req, res) => {
+    const result = await tasks.deleteMany({done:true});
+    return res.sendStatus(204);
 })
 
 app.listen(6969, () => {

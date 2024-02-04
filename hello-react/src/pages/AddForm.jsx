@@ -6,19 +6,19 @@ export default function AddForm({ add })
 {
     const inputRef = useRef();
     return(
-        <form 
+        <form action="submit"
         onSubmit={e => {
-            // e.preventDefault();
-            // const subject = inputRef.current.value;
-            // add(subject);
-            // inputRef.current.value = "";
-            // inputRef.current.focus();
+            e.preventDefault();
+            const subject = inputRef.current.value;
+            add(subject);
+            inputRef.current.value = "";
+            inputRef.current.focus();
           }}>
             <Input
                 inputRef = {inputRef}
                 fullWidth
                 endAdornment = {
-                    <IconButton>
+                    <IconButton type ="submit">
                         <AddIcon />
                     </IconButton>
                 }

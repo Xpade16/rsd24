@@ -1,8 +1,8 @@
 import Header from "./pages/Header";
-import { Container } from "@mui/material";
+import { Container, Box, CircularProgress } from "@mui/material";
 import { Outlet } from "react-router-dom";
 
-export default function AppRoot({ list, clear }) {
+export default function AppRoot({ list, clear, isLoading }) {
 
   return <div role='main'>
     <Header
@@ -10,7 +10,7 @@ export default function AppRoot({ list, clear }) {
       clear={clear}
     />
     <Container maxWidth='sm' sx={{ mt: 4 }}>
-      <Outlet />
+      {isLoading ? <Box sx={{ display: 'flex', height: 200, alignItems: "center", justifyContent: "center" }}><CircularProgress></CircularProgress></Box> : <Outlet />}
     </Container>
   </div>
 }
