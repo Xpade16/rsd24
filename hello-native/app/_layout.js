@@ -16,11 +16,11 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 20,
-        fongWeight: 'bold',
+        fontWeight: 'bold',
         color: 'white',
     },
     logo:{
-        fontsize:20,
+        fontSize:20,
         color:"white",
         marginRight:20,
     }

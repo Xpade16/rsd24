@@ -8,6 +8,7 @@ const api = "http://localhost:6969/tasks";
 
 
 export default function AppRouter() {
+    console.log(import.meta.env.VITE_API)
     const [list, setList] = useState([
         // { _id: 1, subject: 'Apple', done: false },
         // { _id: 2, subject: 'Avocado', done: true },

@@ -1,6 +1,6 @@
 import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet } from "react-native";
 import { Link } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome"
 
 const styles = StyleSheet.create({
@@ -30,22 +30,34 @@ const styles = StyleSheet.create({
         fontSize: 18
     }
 });
-
+const api = "http://172.20.10.3:6969/tasks";
 export default function App() {
     const [subject, setSubject] = useState('');
-    const [tasks, setTasks] = useState([
-        { _id: 1, subject: 'Apple', done: false },
-        { _id: 2, subject: 'Orange', done: false },
-        { _id: 3, subject: 'Banana', done: false },
-        { _id: 4, subject: 'Milk', done: false }
-    ])
+    const [tasks, setTasks] = useState([])
+    
+    useEffect(()=>{
+        (async()=>{
+            
+            const res = await fetch(api);
+            const data = await res.json();
+            setTasks(data);
+        })();
+    },[])
+    const add = async () => {
 
-    const add = () => {
-        const _id = tasks[tasks.length - 1]._id + 1;
-        setTasks([...tasks, { _id, subject, done: false }]);
-        setSubject('');
+        const res = await fetch(api,{
+            method:'POST',
+            body: JSON.stringify({subject}),
+            headers:{
+                'Content-Type':'application/json',
+            }
+        });
+        const data = await res.json();
+        // const _id = tasks[tasks.length - 1]._id + 1;
+        setTasks([...tasks, data]);
+        setSubject("");
     }
-
+    
     return (
         <View>
             <View style={styles.form}>
@@ -57,10 +69,10 @@ export default function App() {
                     <View style={styles.listItem}
                         key={item._id}>
                         <Text style={styles.itemText}>{item.subject}</Text>
-                        <Link href="/edit" style={{ marginRight: 10 }}>
+                        <Link href={`/edit/${item._id}`} style={{ marginRight: 10 }}>
                             <FontAwesome
                                 name="edit"
-                                style={{ fontsize: 18, color: 'teal' }}
+                                style={{ fontSize: 18, color: 'teal' }}
                             />
                         </Link>
                         <TouchableOpacity onPress={() => {
@@ -68,7 +80,7 @@ export default function App() {
                                 return task._id !== item._id;
                             }))
                         }}>
-                            <FontAwesome name="trash" style={{ fontsize: 18, color: "salmon" }}></FontAwesome>
+                            <FontAwesome name="trash" style={{ fontSize: 18, color: "salmon" }}></FontAwesome>
                         </TouchableOpacity>
                     </View>
                 ))}
