@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
         fontSize: 18
     }
 });
-const api = "http://172.20.10.3:6969/tasks";
+const api = "http://192.168.100.178:6969/tasks";
 export default function App() {
     const [subject, setSubject] = useState('');
     const [tasks, setTasks] = useState([])
@@ -57,7 +57,18 @@ export default function App() {
         setTasks([...tasks, data]);
         setSubject("");
     }
-    
+    const toggle = async _id => {
+		await fetch(`${api}/toggle/${_id}`, {
+            method: 'PUT',
+        });
+
+		setTasks(
+			tasks.map(item => {
+				if (item._id === _id) item.done = !item.done;
+				return item;
+			})
+		);
+	};
     return (
         <View>
             <View style={styles.form}>
@@ -65,9 +76,22 @@ export default function App() {
                 <Button title="Add" onPress={add} />
             </View>
             <View style={styles.list}>
-                {tasks.map(item => (
+                {tasks.filter(item => !item.done).map(item => (
                     <View style={styles.listItem}
                         key={item._id}>
+                            <TouchableOpacity
+								onPress={() => {
+									toggle(item._id);
+								}}>
+								<FontAwesome
+									name="check"
+									style={{
+										fontSize: 18,
+										color: "#999",
+										marginRight: 10,
+									}}
+								/>
+							</TouchableOpacity>
                         <Text style={styles.itemText}>{item.subject}</Text>
                         <Link href={`/edit/${item._id}`} style={{ marginRight: 10 }}>
                             <FontAwesome
@@ -85,6 +109,54 @@ export default function App() {
                     </View>
                 ))}
             </View>
+            <View style={styles.list}>
+				{tasks
+					.filter(item => item.done)
+					.map(item => (
+						<View
+							style={styles.listItem}
+							key={item._id}>
+							<TouchableOpacity
+								onPress={() => {
+									toggle(item._id);
+								}}>
+								<FontAwesome
+									name="check"
+									style={{
+										fontSize: 18,
+										color: "green",
+										marginRight: 10,
+									}}
+								/>
+							</TouchableOpacity>
+
+							<Text style={[styles.itemText, { color: '#aaa' }]}>{item.subject}</Text>
+
+							<Link
+								href={`/edit/${item._id}`}
+								style={{ marginRight: 10 }}>
+								<FontAwesome
+									name="edit"
+									style={{ fontSize: 18, color: "teal" }}
+								/>
+							</Link>
+
+							<TouchableOpacity
+								onPress={() => {
+									setTasks(
+										tasks.filter(task => {
+											return task._id !== item._id;
+										})
+									);
+								}}>
+								<FontAwesome
+									name="trash"
+									style={{ fontSize: 18, color: "salmon" }}
+								/>
+							</TouchableOpacity>
+						</View>
+					))}
+			</View>
         </View>
     )
 }
