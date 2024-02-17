@@ -1,7 +1,6 @@
 import AppDrawer from "./components/AppDrawer";
 import Header from "./components/Header";
 import { useUIState } from "./providers/UIStateProvider";
-import { CssBaseline } from "@mui/material";
 
 export default function App() {
 
@@ -9,6 +8,5 @@ export default function App() {
   return <>
     <AppDrawer />
     <Header/>
-    <CssBaseline/>
   </>
 }

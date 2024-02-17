@@ -6,11 +6,13 @@ import {
     DarkMode as DarkModeIcon,
 } from "@mui/icons-material"
 import { useUIState } from "../providers/UIStateProvider";
+import { useAppTheme } from "../providers/AppThemeProvider";
 
 
 export default function Header() {
-    const { openDrawer, setOpenDrawer } = useUIState();
-    return <AppBar position="static">
+    const { setOpenDrawer } = useUIState();
+    const {mode, setMode} = useAppTheme();
+    return <AppBar position="static" sx={{bgcolor: "header.background"}}>
         <Toolbar sx={{ display: "flex", justifyContent: 'space-between' }}>
             <IconButton
                 edge="start"
@@ -22,10 +24,16 @@ export default function Header() {
             </IconButton>
             <XIcon />
             <Box>
-                <IconButton>
+                {mode ==="dark"?(
+                    <IconButton color="inherit" onClick={()=>setMode("light")}>
+                    <LightModeIcon />
+                </IconButton>
+                ):(
+                    <IconButton color="inherit"onClick={()=>setMode("dark")}>
                     <DarkModeIcon />
                 </IconButton>
-                <IconButton>
+                )}
+                <IconButton color="inherit" edge="end">
                     <NotiIcon />
                 </IconButton>
             </Box>
