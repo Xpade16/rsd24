@@ -86,7 +86,10 @@ export default function AppDrawer() {
                         <ListItemText primary="Login"/>
                     </ListItemButton>
                 </ListItem>
-                <ListItem disablePadding>
+                <ListItem disablePadding onClick={()=>{
+                        navigate("/register");
+                        setOpenDrawer(false);
+                    }}>
                     <ListItemButton disableRipple>
                         <ListItemIcon>
                             <RegisterIcon/>
