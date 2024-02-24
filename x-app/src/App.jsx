@@ -1,12 +1,25 @@
-import AppDrawer from "./components/AppDrawer";
-import Header from "./components/Header";
-import { useUIState } from "./providers/UIStateProvider";
+import{createBrowserRouter, RouterProvider} from "react-router-dom";
+import Layout from "./Layout";
+import Home  from "./pages/Home";
+import Login from "./pages/Login";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      {
+        path: "/",
+        element: <Home />
+      },
+      {
+        path: "/login",
+        element: <Login />
+      }
+    ]
+  }
+]);
 
 export default function App() {
-
-  const { openDrawer, setOpenDrawer } = useUIState();
-  return <>
-    <AppDrawer />
-    <Header/>
-  </>
+  return <RouterProvider router={router} />
 }
