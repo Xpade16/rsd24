@@ -2,11 +2,12 @@ require("dotenv").config();
 
 const express = require("express");
 const app = express();
-
-const {usersRouter} = require("./routers/users");
+const cors = require("cors");
+app.use(cors());
+const { usersRouter } = require("./routers/users");
 app.use(usersRouter);
 
-app.listen(process.env.PORT, ()=>{
+app.listen(process.env.PORT, () => {
     console.log(`X API running at ${process.env.PORT}`)
 })
 

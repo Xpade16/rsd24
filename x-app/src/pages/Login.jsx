@@ -1,11 +1,14 @@
 import { Box, TextField, Typography, Button, Alert } from "@mui/material";
 import { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../providers/AuthProvider"
 export default function Login() {
     const handleRef = useRef();
     const passwordRef = useRef();
-
+    const { setAuth, setAuthUser } = useAuth();
     const [hasError, setHasError] = useState(false);
+    const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState('');
     return (<Box>
         <Typography variant="h4">
             Login
@@ -18,17 +21,44 @@ export default function Login() {
 
                 if (!handle || !password) {
                     setHasError(true);
-                } else {
-                    setHasError(false);
+                    setErrorMessage("Handle and Password required");
+                    return false;
                 }
+                (async () => {
+                    const api = import.meta.env.VITE_API_URL;
+                    const res = await fetch(`${api}/login`, {
+                        method: "POST",
+                        body: JSON.stringify({ handle, password }),
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    });
+                    if (!res.ok) {
+                        setErrorMessage("Incorrect Handle or Password")
+                        setHasError(true);
+                        return false;
+                    }
+                    const data = await res.json();
+                    localStorage.setItem("token", data.token)
 
-                return false;
+                    fetch(`${api}/verify`, {
+                        headers: {
+                            Authorization: `Bearer ${data.token}`
+                        }
+                    })
+                        .then(res => res.json())
+                        .then(user => {
+                            setAuth(true);
+                            setAuthUser(user);
+                            navigate("/");
+                        });
+                })();
             }}>
                 {hasError && (
                     <Alert
                         severity="warning"
                         sx={{ mb: 4 }}>
-                        handle or password required
+                        {errorMessage}
                     </Alert>
                 )}
                 <TextField

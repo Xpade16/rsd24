@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider";
 export default function AppDrawer() {
     const { openDrawer, setOpenDrawer } = useUIState();
-    const { auth, setAuth } = useAuth();
+    const { auth, setAuth, authUser, setAuthUser } = useAuth();
     const navigate = useNavigate();
     return <Drawer
         anchor="left"
@@ -40,13 +40,13 @@ export default function AppDrawer() {
                                         background: pink[500],
                                     }}
                                 >
-                                    A
+                                    {authUser.name[0]}
                                 </Avatar>
                                 <Box sx={{ ml: 3 }}>
                                     <Typography sx={{ fontSize: 21, fontWeight: "bold", color: blue[500] }}>
-                                        Alice
+                                        {authUser.name}
                                     </Typography>
-                                    <Typography sx={{ color: grey[600], fontSize: 16, mt: -1 }}>alice</Typography>
+                                    <Typography sx={{ color: grey[600], fontSize: 16, mt: -1 }}>@{authUser.handle}</Typography>
                                 </Box>
                             </Box>
                         </>
@@ -60,6 +60,8 @@ export default function AppDrawer() {
                         <ListItem disablePadding>
                             <ListItemButton disableRipple onClick={() => {
                                 navigate("/");
+                                setAuth(false);
+
                                 setOpenDrawer(false);
                             }}>
                                 <ListItemIcon>
@@ -78,9 +80,12 @@ export default function AppDrawer() {
                         </ListItem>
                         <ListItem disablePadding>
                             <ListItemButton disableRipple onClick={
-                                ()=>{
+                                () => {
                                     setAuth(false);
                                     setOpenDrawer(false);
+                                    setAuthUser({});
+                                    localStorage.removeItem("token");
+                                    navigate("/login");
                                 }
                             }>
                                 <ListItemIcon>
@@ -95,7 +100,7 @@ export default function AppDrawer() {
                     <>
                         <ListItem disablePadding>
                             <ListItemButton disableRipple onClick={() => {
-                                setAuth(true);
+                                // setAuth(true);
                                 navigate("/login");
                                 setOpenDrawer(false);
                             }}>
@@ -106,7 +111,7 @@ export default function AppDrawer() {
                             </ListItemButton>
                         </ListItem>
                         <ListItem disablePadding onClick={() => {
-                            
+
                             navigate("/register");
                             setOpenDrawer(false);
                         }}>
