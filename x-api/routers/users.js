@@ -58,4 +58,24 @@ router.post("/login", async (req, res) => {
     })
 })
 
+router.post("/register", async (req, res) => {
+    const { name, handle, profile, password } = req.body;
+    if (!name || !handle || !password) {
+        return res.status(400).json({
+            msg: 'name, handle, password: is all required'
+        })
+    }
+    let hashedPassword = await bcrypt.hash(password, 10);
+    const user = {
+        name,
+        handle,
+        profile,
+        password: hashedPassword,
+        created: new Date(),
+        followers: [],
+    }
+    const result = await xusers.insertOne(user);
+    user._id = result.insertedId;
+    return res.json(user);
+})
 module.exports = { usersRouter: router };

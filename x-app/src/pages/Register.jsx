@@ -1,15 +1,16 @@
 import { Box, TextField, Typography, Button, Alert } from "@mui/material";
 import { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 export default function Register() {
     const nameRef = useRef();
     const handleRef = useRef();
     const profileRef = useRef();
     const passwordRef = useRef();
     const confirmPasswordRef = useRef();
-
+    const navigate = useNavigate();
     const [hasError, setHasError] = useState(false);
     const [passwordValidation, setPasswordValidation] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     return (<Box>
         <Typography variant="h4">
             Register
@@ -17,9 +18,9 @@ export default function Register() {
         <Box sx={{ mt: 4 }}>
             <form onSubmit={e => {
                 e.preventDefault();
-                const name = name.current.value;
+                const name = nameRef.current.value;
                 const handle = handleRef.current.value;
-                const profile = profile.current.value;
+                const profile = profileRef.current.value;
                 const password = passwordRef.current.value;
                 const confirmPassword = confirmPasswordRef.current.value;
 
@@ -28,8 +29,25 @@ export default function Register() {
                     setHasError(true);
                 } else {
                     setHasError(false);
+
+
+                    (async () => {
+                        const api = import.meta.env.VITE_API_URL;
+                        const res = await fetch(`${api}/register`, {
+                            method: 'POST',
+                            body: JSON.stringify({ name, handle, profile, password }),
+                            headers: {
+                                'Content-Type': 'application/json',
+                            }
+                        });
+                        if (!res.ok) {
+                            setErrorMessage('Please Try Again');
+                            setHasError(true);
+                            return false;
+                        }
+                        navigate("/login");
+                    })();
                 }
-                return false;
             }}>
                 {hasError && (
                     <Alert
