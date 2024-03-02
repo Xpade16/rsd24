@@ -7,6 +7,9 @@ app.use(cors());
 const { usersRouter } = require("./routers/users");
 app.use(usersRouter);
 
+const{postRouter} = require("./routers/posts");
+app.use(postRouter);
+
 app.listen(process.env.PORT, () => {
     console.log(`X API running at ${process.env.PORT}`)
 })
