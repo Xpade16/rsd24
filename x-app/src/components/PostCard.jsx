@@ -19,8 +19,8 @@ import {
 import { blue, green, grey, pink } from "@mui/material/colors";
 import { format } from 'date-fns';
 import { useAuth } from '../providers/AuthProvider';
-
-export default function PostCard({ post }) {
+import {LikeButton} from "./LikeButton";
+export function PostCard({ post, like, unlike }) {
     const { auth, authUser } = useAuth();
     return (<Card sx={{ mb: 2 }}>
         <CardContent>
@@ -45,27 +45,8 @@ export default function PostCard({ post }) {
                 </Typography>
             </CardActionArea>
             <Box>
-                <ButtonGroup>
-                    <IconButton>
-                        {auth && post.likes ? (
-                            post.likes.find(
-                                like => like === authUser._id
-                            ) ? (
-                                <LikedIcon sx={{ color: pink[500] }} />
-                            ) :
-                                (
-                                    <LikeIcon sx={{ color: pink[500] }} />
-                                )
-                        ) : (
-                            <LikeIcon sx={{ color: pink[500] }} />
-                        )
-                        }
-                    </IconButton>
-                    <Button variant="text">
-                        {post.likes ? post.likes.length : 0}
-                    </Button>
+                <LikeButton post={post} like={like} unlike={unlike} />
 
-                </ButtonGroup>
                 <ButtonGroup>
                     <IconButton>
                         <CommentIcon sx={{ color: blue[500] }} />

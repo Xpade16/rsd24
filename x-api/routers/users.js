@@ -26,6 +26,14 @@ router.get("/users", auth, async (req, res) => {
     return res.json(data);
 });
 
+router.get("/users/likes/:id", async (req, res)=>{
+    const{id} = req.params;
+    const post = await xdb.collection("posts").findOne({_id: new ObjectId(id)});
+    const users = await xusers.find({ _id: {$in: post.likes}, }).toArray();
+
+    return res.json(users);
+});
+
 router.get("/users/:id", async (req, res) => {
     const { id } = req.params;
     const data = await xusers.findOne({ _id: new ObjectId(id) }, { projection: { password: 0 } });

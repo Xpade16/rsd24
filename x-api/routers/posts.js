@@ -11,11 +11,11 @@ const { MongoClient, ObjectId } = require("mongodb");
 const mongo = new MongoClient(process.env.MONGO_HOST);
 const xdb = mongo.db("x");
 const xposts = xdb.collection("posts");
-
+const { auth } = require("../middlewares/auth")
 router.get("/posts", async (req, res) => {
     const data = await xposts.aggregate([
         {
-            $match:{type:"post"}
+            $match: { type: "post" }
         },
         {
             $lookup: {
@@ -26,11 +26,11 @@ router.get("/posts", async (req, res) => {
             }
         },
         {
-            $lookup:{
-                from:"posts",
-                localField:"_id",
-                foreignField:"origin",
-                as:"comments"
+            $lookup: {
+                from: "posts",
+                localField: "_id",
+                foreignField: "origin",
+                as: "comments"
             }
         },
         { $unwind: "$owner" },
@@ -39,5 +39,28 @@ router.get("/posts", async (req, res) => {
     ]).toArray();
     return res.json(data);
 });
-
+router.put("/posts/like/:id", auth, async (req, res) => {
+    const { id } = req.params;
+    const user = res.locals.user;
+    const post = await xposts.findOne({ _id: new ObjectId(id) });
+    const likes = [...post.likes, user._id];
+    await xposts.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { likes } }
+    );
+    return res.json(likes);
+})
+router.put("/posts/unlike/:id", auth, async (req, res) => {
+    const { id } = req.params;
+    const user = res.locals.user;
+    const post = await xposts.findOne({ _id: new ObjectId(id) });
+    const likes = post.likes.filter(
+        like => like.toString() !== user._id.toString()
+    )
+    await xposts.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { likes } }
+    );
+    return res.json(likes);
+})
 module.exports = { postRouter: router }
