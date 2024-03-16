@@ -71,7 +71,10 @@ export default function AppDrawer() {
                             </ListItemButton>
                         </ListItem>
                         <ListItem disablePadding>
-                            <ListItemButton disableRipple>
+                            <ListItemButton onClick={()=>{
+                                setOpenDrawer(false);
+                                navigate(`/profile/${authUser._id}`)
+                            }} disableRipple>
                                 <ListItemIcon>
                                     <ProfileIcon />
                                 </ListItemIcon>

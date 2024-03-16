@@ -3,7 +3,7 @@ import {
 } from "@mui/material";
 
 import { useEffect, useState } from "react";
-import {PostCard} from "../components/PostCard";
+import PostCard from "../components/PostCard";
 import { useAuth } from '../providers/AuthProvider';
 
 export default function Home() {
