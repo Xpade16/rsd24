@@ -70,16 +70,19 @@ router.get("/posts/:id", async (req, res) => {
 					localField: "_id",
 					foreignField: "origin",
 					as: "comments",
-                    // pipeline: [
-                    //     {
-                    //         $match: {
-                    //             from: "users",
-                    //             localField: "owner",
-                    //             foreignField: "_id",
-                    //             as: "owner"
-                    //         }
-                    //     }
-                    // ]
+                    pipeline: [
+                        {
+                            $lookup: {
+                                from: "users",
+                                localField: "owner",
+                                foreignField: "_id",
+                                as: "owner"
+                            }
+                        },
+						{
+							$unwind:"$owner"
+						}
+                    ]
 				},
 			},
 			{ $unwind: "$owner" },

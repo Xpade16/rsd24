@@ -21,6 +21,19 @@ export default function Home() {
 		});
 
 		setPosts(result);
+
+		const api = import.meta.env.VITE_API_URL;
+		const token = localStorage.getItem("token");
+		const owner = posts.filter(post => post._id === _id)[0].owner._id;
+
+		fetch(`${api}/notis/like`,{
+			method:"POST",
+			body: JSON.stringify({owner, target:_id}),
+			headers:{
+				Authorization: `Bearer ${token}`,
+				"Content-Type": "application/json"
+			},
+		});
 	};
 
 	const unlike = _id => {

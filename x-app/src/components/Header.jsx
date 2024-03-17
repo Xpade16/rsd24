@@ -38,7 +38,8 @@ export default function Header() {
 			});
 
             const notis = await res.json();
-			setNotiCount( notis.filter(noti => !noti.read).length );
+			const count = auth? notis.filter(noti => !noti.read).length : 0;
+			setNotiCount(count);
 		})();
 	}, [auth, notiCount]);
 
